@@ -2,33 +2,23 @@ import pygame
 
 
 def draw(screen):
-    screen.fill("yellow")
-    if n % 2 == 0:
-        n1 = n // 2
-    else:
-        n1 = n // 2 + 1
-    len = 300 // n1
-
-    for i in range(1, len, 2):
-        for j in range(1, len, 2):
-            pygame.draw.polygon(screen, 'orange',
-                                [[n1 * (j - 1), n1 * i], [n1 * j, n1 * (i - 1)], [n1 * (j + 1), n1 * i],
-                                 [n1 * j, n1 * (i + 1)]])
+    screen.fill("white")
+    for i in range(12):
+        for j in range(11):
+            if i % 2 == 0:
+                screen.fill(pygame.Color('red'), pygame.Rect(j * 32, i * 17, 30, 15))
+            else:
+                screen.fill(pygame.Color('red'), pygame.Rect(j * 32 - 15, i * 17, 30, 15))
+                screen.fill(pygame.Color('white'), pygame.Rect(15, 17 * i, 2, 15))
 
 
 if __name__ == '__main__':
     pygame.init()
-    pygame.display.set_caption("Ромбики")
-    size = width, height = 300, 300
-    try:
-        n = int(input())
-    except ValueError:
-        print("Неправильный формат ввода")
-        pygame.quit()
-    else:
-        screen = pygame.display.set_mode(size)
-        draw(screen)
-        pygame.display.flip()
-        while pygame.event.wait().type != pygame.QUIT:
-            pass
-        pygame.quit()
+    pygame.display.set_caption("Кирпичи")
+    size = width, height = 300, 200
+    screen = pygame.display.set_mode(size)
+    draw(screen)
+    pygame.display.flip()
+    while pygame.event.wait().type != pygame.QUIT:
+        pass
+    pygame.quit()
