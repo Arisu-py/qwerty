@@ -26,22 +26,27 @@ def load_image(name, colorkey=None):
     return image
 
 
-class Car(pygame.sprite.Sprite):
-    image = load_image("arrow.png")
+class Cr(pygame.sprite.Sprite):
+    image = load_image("creature.png")
+    move = 10
 
     def __init__(self, *group):
         super().__init__(*group)
-        self.image = Car.image
+        self.image = Cr.image
         self.rect = self.image.get_rect()
         self.rect.x = 0
         self.rect.y = 0
 
     def process_event(self, event):
-        pygame.mouse.set_visible(False)
-        x, y = pygame.mouse.get_pos()
-        self.rect.x = x
-        self.rect.y = y
-
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_RIGHT:
+                self.rect.x += 10
+            elif event.key == pygame.K_LEFT:
+                self.rect.x -= 10
+            elif event.key == pygame.K_UP:
+                self.rect.y -= 10
+            elif event.key == pygame.K_DOWN:
+                self.rect.y += 10
 
 
 class GroupCr(pygame.sprite.Group):
@@ -52,9 +57,10 @@ class GroupCr(pygame.sprite.Group):
 
 if __name__ == '__main__':
     all_sprites = GroupCr()
-    Car(all_sprites)
+    #
+    # for _ in range(4):
+    Cr(all_sprites)
 
-    move = 50
     running = True
     fps = 30
     clock = pygame.time.Clock()
@@ -63,7 +69,7 @@ if __name__ == '__main__':
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            if pygame.mouse.get_focused():
+            elif event.type == pygame.KEYDOWN:
                 all_sprites.process_event(event)
 
         # обновление экрана
