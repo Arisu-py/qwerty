@@ -2,30 +2,22 @@ import pygame
 
 
 def draw(screen):
-    if n % 2 == 0:
-        color_fill = "black"
-        color = "white"
-    else:
-        color_fill = "white"
-        color = "black"
-    screen.fill(color_fill)
-    width = a // n
+    screen.fill("black")
     for i in range(n):
-        k = i % 2
-        for j in range(k, n, 2):
-            screen.fill(pygame.Color(color), pygame.Rect(j * width, i * width, width, width))
+        pygame.draw.ellipse(screen, "white", (0, (300 // n) * i // 2, 300, 300 - i * 300 // n), 1)
+        pygame.draw.ellipse(screen, "white", ((300 // n) * i // 2, 0, 300 - i * 300 // n, 300), 1)
 
 
 if __name__ == '__main__':
     pygame.init()
-    pygame.display.set_caption("Шахматная клетка")
+    pygame.display.set_caption("Сетка")
+    size = width, height = 300, 300
     try:
-        a, n = map(int, input().split())
+        n = int(input())
     except ValueError:
         print("Неправильный формат ввода")
         pygame.quit()
     else:
-        size = width, height = a, a
         screen = pygame.display.set_mode(size)
         draw(screen)
         pygame.display.flip()
