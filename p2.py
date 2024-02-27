@@ -1,110 +1,76 @@
+import os
+import sys
 import random
 from copy import deepcopy
 from itertools import product
 
 import pygame
 
+pygame.init()
+size = width, height = 300, 300
+screen = pygame.display.set_mode(size)
 
-class Board:
-    # создание поля
-    def __init__(self, board_width, board_height):
-        self.board_updating = False
-        self.width = board_width
-        self.height = board_height
-        self.board = [[0] * self.width for _ in range(self.height)]
-        # значения по умолчанию
-        self.left = 50
-        self.top = 10
-        self.cell_size = 30
 
-    # настройка внешнего вида
-    def set_view(self, left, top, cell_size):
-        self.left = left
-        self.top = top
-        self.cell_size = cell_size
+def load_image(name, colorkey=None):
+    fullname = os.path.join('data', name)
+    if not os.path.isfile(fullname):
+        print(f"Файл с изображением '{fullname}' не найден")
+        sys.exit()
+    image = pygame.image.load(fullname)
+    if colorkey is not None:
+        if colorkey == -1:
+            colorkey = image.get_at((0, 0))
+        image.set_colorkey(colorkey)
+    else:
+        image = image.convert_alpha()
+    return image
 
-    def render(self, screen):
-        for i in range(self.height):
-            for j in range(self.width):
-                r = (self.left + j * self.cell_size,
-                     self.top + i * self.cell_size,
-                     self.cell_size, self.cell_size)
-                if self.board[i][j] == 1:
-                    pygame.draw.rect(screen, (0, 255, 0), r)
-                pygame.draw.rect(screen, (255, 255, 255), r, 1)
 
-    def get_cell(self, mouse_pos):
-        row = (mouse_pos[1] - self.top) // self.cell_size
-        col = (mouse_pos[0] - self.left) // self.cell_size
-        return (row, col) if (0 <= row < self.height and
-                              0 <= col < self.width) else None
+class Car(pygame.sprite.Sprite):
+    image = load_image("arrow.png")
 
-    def on_click(self, cell):
-        self.board[cell[0]][cell[1]] ^= 1
+    def __init__(self, *group):
+        super().__init__(*group)
+        self.image = Car.image
+        self.rect = self.image.get_rect()
+        self.rect.x = 0
+        self.rect.y = 0
 
-    def process_click(self, mouse_pos):
-        cell = self.get_cell(mouse_pos)
-        if cell is not None:
-            self.on_click(cell)
+    def process_event(self, event):
+        pygame.mouse.set_visible(False)
+        x, y = pygame.mouse.get_pos()
+        self.rect.x = x
+        self.rect.y = y
 
-    def next_move(self):
-        new_board = deepcopy(self.board)
-        for i in range(self.height):
-            for j in range(self.width):
-                neighbours = 0
-                for di, dj in product((-1, 0, 1), repeat=2):
-                    if di == dj == 0:
-                        continue
-                    ni, nj = i + di, j + dj
-                    if 0 <= ni < self.height and 0 <= nj < self.width:
-                        neighbours += self.board[ni][nj]
-                if neighbours <= 1 or neighbours > 3:
-                    new_board[i][j] = 0
-                elif neighbours == 3:
-                    new_board[i][j] = 1
-        self.board = new_board
+
+
+class GroupCr(pygame.sprite.Group):
+    def process_event(self, event):
+        for sprite in self.sprites():
+            sprite.process_event(event)
 
 
 if __name__ == '__main__':
-    pygame.init()
-    size = width, height = 900, 600
-    screen = pygame.display.set_mode(size)
+    all_sprites = GroupCr()
+    Car(all_sprites)
 
+    move = 50
     running = True
     fps = 30
     clock = pygame.time.Clock()
-    BOARD_UPDATE = pygame.USEREVENT + 1
 
-    board = Board(40, 25)
-    board.set_view(10, 10, 20)
-    v = 1000
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            elif event.type == BOARD_UPDATE:
-                board.next_move()
-            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                board.process_click(event.pos)
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
-                    pygame.time.set_timer(BOARD_UPDATE, 0 if board.board_updating else 1000)
-                    board.board_updating = not board.board_updating
-            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
-                pygame.time.set_timer(BOARD_UPDATE, 1000)
-                board.board_updating = True
-            elif event.type == pygame.MOUSEWHEEL and board.board_updating:
-                if event.y < 0:
-                    v += 200
-                elif event.y > 0:
-                    if v != 200:
-                        v -= 200
-                pygame.time.set_timer(BOARD_UPDATE, v)
-                print(v)
+            if pygame.mouse.get_focused():
+                all_sprites.process_event(event)
 
         # обновление экрана
-        screen.fill((0, 0, 0))
-        board.render(screen)
+        screen.fill((255, 255, 255))
+        all_sprites.update()
+        all_sprites.draw(screen)
         pygame.display.flip()
+
         clock.tick(fps)
     pygame.quit()
