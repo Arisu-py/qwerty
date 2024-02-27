@@ -2,51 +2,46 @@ import pygame
 
 if __name__ == '__main__':
     pygame.init()
-    pygame.display.set_caption('Движущийся круг 2')
-    size = width, height = 800, 400
+    pygame.display.set_caption('Перетаскивание')
+    size = width, height = 500, 500
     screen = pygame.display.set_mode(size)
 
     running = True
-    k = 0
-    v = 20  # пикселей в секунду
+    r = 0
+    v = 10  # пикселей в секунду
     fps = 60
-    a = []
     clock = pygame.time.Clock()
+    screen.fill("black")
+    screen.fill(pygame.Color('green'), pygame.Rect(0, 0, 100, 100))
+    x_pos = 0
+    y_pos = 0
+    k = 0
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+            if event.type == pygame.MOUSEMOTION and k == 1:
+                x = event.pos[0]
+                y = event.pos[1]
+                screen.fill("black")
+                screen.fill(pygame.Color('green'), pygame.Rect(x + x_drow, y + y_drow, 100, 100))
+
             if event.type == pygame.MOUSEBUTTONDOWN:
-                k += 1
-                x_pos = list(event.pos)[0]
-                y_pos = list(event.pos)[1]
-                a.append([x_pos, y_pos, 0, 0])
-        if k != 0:
-            screen.fill((0, 0, 0))
-            k1, k0 = -1, -1
-            for i in a:
-                k0 += 1
-                for j in i:
-                    pygame.draw.circle(screen, (255, 0, 0), (a[k0][0], a[k0][1]), 20)
-                    if a[k0][0] == 0:
-                        a[k0][2] = 1
-                    if a[k0][1] == 0:
-                        a[k0][3] = 1
-                    if a[k0][0] == 800:
-                        a[k0][2] = 0
-                    if a[k0][1] == 400:
-                        a[k0][3] = 0
-                    if a[k0][2] == 0:
-                        a[k0][0] -= 1
-                    if a[k0][3] == 0:
-                        a[k0][1] -= 1
-                    if a[k0][2] == 1:
-                        a[k0][0] += 1
-                    if a[k0][3] == 1:
-                        a[k0][1] += 1
+                x = event.pos[0]
+                y = event.pos[1]
+                if x_pos <= x <= x_pos + 100 and y_pos <= y <= y_pos + 100:
+                    k = 1
+                    x_drow = x_pos - x
+                    y_drow = y_pos - y
 
+            if event.type == pygame.MOUSEBUTTONUP and k == 1:
+                x = event.pos[0]
+                y = event.pos[1]
+                x_pos = x + x_drow
+                y_pos = y + y_drow
+                k = 0
 
-
+        r += v / fps
         clock.tick(fps)
         pygame.display.flip()
     pygame.quit()
