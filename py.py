@@ -2,15 +2,23 @@ import pygame
 
 
 def draw(screen):
-    screen.fill("black")
-    for i in range(n):
-        pygame.draw.ellipse(screen, "white", (0, (300 // n) * i // 2, 300, 300 - i * 300 // n), 1)
-        pygame.draw.ellipse(screen, "white", ((300 // n) * i // 2, 0, 300 - i * 300 // n, 300), 1)
+    screen.fill("yellow")
+    if n % 2 == 0:
+        n1 = n // 2
+    else:
+        n1 = n // 2 + 1
+    len = 300 // n1
+
+    for i in range(1, len, 2):
+        for j in range(1, len, 2):
+            pygame.draw.polygon(screen, 'orange',
+                                [[n1 * (j - 1), n1 * i], [n1 * j, n1 * (i - 1)], [n1 * (j + 1), n1 * i],
+                                 [n1 * j, n1 * (i + 1)]])
 
 
 if __name__ == '__main__':
     pygame.init()
-    pygame.display.set_caption("Сетка")
+    pygame.display.set_caption("Ромбики")
     size = width, height = 300, 300
     try:
         n = int(input())
