@@ -1,5 +1,3 @@
-import random
-
 import pygame
 
 
@@ -42,14 +40,13 @@ class Board:
 
     def on_click(self, cell):
         color = (0, 0, 0)
-        for i in range(self.height):
-            if self.board[i][cell[1]] is None or self.board[i][cell[1]] == (0, 0, 0):
-                color = (255, 255, 255)
-            else:
-                color = (0, 0, 0)
-            self.board[i][cell[1]] = (color)
-        for j in range(self.width):
-            self.board[cell[0]][j] = (color)
+        if not(self.board[cell[0]][cell[1]])  or self.board[cell[0]][cell[1]] == (0, 0, 0):
+            color = (255, 0, 0)
+        elif self.board[cell[0]][cell[1]] == (255, 0, 0):
+            color = (0, 0, 255)
+        elif self.board[cell[0]][cell[1]] == (255, 0, 0):
+            color = (0, 0, 0)
+        self.board[cell[0]][cell[1]] = color
 
     def process_click(self, mouse_pos):
         cell = self.get_cell(mouse_pos)
@@ -67,7 +64,7 @@ if __name__ == '__main__':
     clock = pygame.time.Clock()
     # MY_EVENT = pygame.USEREVENT + 1
     # pygame.time.set_timer(MY_EVENT, 1000)
-    board = Board(7, 5)  # n = 5, m = 7
+    board = Board(4, 3)  # n = 3, m = 4
     board.set_view(20, 50, 100)
     while running:
         for event in pygame.event.get():
