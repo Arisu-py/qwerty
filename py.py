@@ -2,46 +2,57 @@ import pygame
 
 if __name__ == '__main__':
     pygame.init()
-    pygame.display.set_caption('Перетаскивание')
-    size = width, height = 500, 500
+    pygame.display.set_caption('К щелчку')
+    size = width, height = 501, 501
     screen = pygame.display.set_mode(size)
 
     running = True
-    r = 0
-    v = 10  # пикселей в секунду
     fps = 60
     clock = pygame.time.Clock()
     screen.fill("black")
-    screen.fill(pygame.Color('green'), pygame.Rect(0, 0, 100, 100))
-    x_pos = 0
-    y_pos = 0
+    pygame.draw.circle(screen, ("red"), (251, 251), 20)
     k = 0
+    x_pos = 251
+    y_pos = 251
+    pygame.display.flip()
+
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            if event.type == pygame.MOUSEMOTION and k == 1:
-                x = event.pos[0]
-                y = event.pos[1]
-                screen.fill("black")
-                screen.fill(pygame.Color('green'), pygame.Rect(x + x_drow, y + y_drow, 100, 100))
-
             if event.type == pygame.MOUSEBUTTONDOWN:
                 x = event.pos[0]
                 y = event.pos[1]
-                if x_pos <= x <= x_pos + 100 and y_pos <= y <= y_pos + 100:
-                    k = 1
-                    x_drow = x_pos - x
-                    y_drow = y_pos - y
+                k = 1
+                a = 1
+                b = 1
+                if x < x_pos and y < y_pos:
+                    a = -1
+                    b = -1
+                elif x < x_pos and y > y_pos:
+                    a = -1
+                    b = 1
+                elif x > x_pos and y < y_pos:
+                    a = 1
+                    b = -1
 
-            if event.type == pygame.MOUSEBUTTONUP and k == 1:
-                x = event.pos[0]
-                y = event.pos[1]
-                x_pos = x + x_drow
-                y_pos = y + y_drow
+        if k == 1:
+            if x_pos == x and y_pos == y:
                 k = 0
+            elif x_pos == x or y_pos == y:
+                if x == x_pos:
+                    y_pos += b
+                else:
+                    x_pos += a
+                screen.fill("black")
+                pygame.draw.circle(screen, "red", (x_pos, y_pos), 20)
+            else:
+                x_pos += a
+                y_pos += b
+                screen.fill("black")
+                pygame.draw.circle(screen, "red", (x_pos, y_pos), 20)
+            pygame.display.flip()
 
-        r += v / fps
         clock.tick(fps)
-        pygame.display.flip()
-    pygame.quit()
+
+pygame.quit()
