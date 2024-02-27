@@ -1,62 +1,35 @@
 import pytest
-from yandex_testing_lesson import is_under_queen_attack
+from yandex_testing_lesson import Rectangle
 
 
 def test_one_step():
-    assert is_under_queen_attack('e2', 'e2') is True
+    assert Rectangle(2, 3)
 
 
-def test_false_step():
-    assert is_under_queen_attack('f3', 'h2') is False
+def test_area():
+    assert Rectangle(2, 3).get_area() == 6
 
 
-def test_right_step():
-    assert is_under_queen_attack('f3', 'e2') is True
+def test_p():
+    assert Rectangle(2, 3).get_perimeter() == 10
 
 
-def test_right_step2():
-    assert is_under_queen_attack('f3', 'd3') is True
-
-
-def test_right_step3():
-    assert is_under_queen_attack('f3', 'f4') is True
-
-
-def test_wrong_first():
+def test_wrong():
     with pytest.raises(TypeError):
-        is_under_queen_attack(42, 'a2')
+        Rectangle('a', 1)
 
 
-def test_wrong_second():
+def test_wrong_n():
     with pytest.raises(ValueError):
-        is_under_queen_attack('j5', 'a2')
+        Rectangle(-1, 2)
 
 
-def test_wrong_second1():
-    with pytest.raises(ValueError):
-        is_under_queen_attack('a2b', 'a2')
-
-
-def test_wrong_third():
-    with pytest.raises(ValueError):
-        is_under_queen_attack('abc', 'a2')
-
-
-def test_wrong_first_a():
+def test_wrong_1():
     with pytest.raises(TypeError):
-        is_under_queen_attack('a2', 42)
+        Rectangle(1, 'a')
 
 
-def test_wrong_second_a():
+def test_wrong_n1():
     with pytest.raises(ValueError):
-        is_under_queen_attack('a2', 'j5')
+        Rectangle(2, -1)
 
-
-def test_wrong_second2():
-    with pytest.raises(ValueError):
-        is_under_queen_attack('a2', 'a2b')
-
-
-def test_wrong_third_a():
-    with pytest.raises(ValueError):
-        is_under_queen_attack('a2', 'abc')
