@@ -1,12 +1,14 @@
-# parsing slovarya
+# proverka oshibok
 import argparse
 
-parser = argparse.ArgumentParser()
-parser.add_argument("values", nargs='*')
-parser.add_argument('--sort', dest='sort', action='store_true')
-args = parser.parse_args()
-sp = {a.split('=')[0]: a.split('=')[1] for a in args.values}
-if args.sort:
-    sp = dict(sorted(sp.items()))
-for a in sp:
-    print(f'Key: {a} Value: {sp[a]}')
+
+def print_error(message):
+    print(f'ERROR: {message}!!')
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument("message")
+    args = parser.parse_args()
+    print('Welcome to my program')
+    print_error(args.message)
