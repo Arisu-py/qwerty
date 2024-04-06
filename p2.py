@@ -1,16 +1,27 @@
-# raschot pl
+# formatirovanie filov
 import argparse
 
-parser = argparse.ArgumentParser()
-parser.add_argument("--per-day", dest='per_day', type=int, default=0)
-parser.add_argument("--per-week", dest='per_week', type=int, default=0)
-parser.add_argument("--per-month", dest='per_month', type=int, default=0)
-parser.add_argument("--per-year", dest='per_year', type=int, default=0)
-parser.add_argument("--get-by", dest='get', type=str, default='day', choices=['day', 'month', 'year'])
-args = parser.parse_args()
-if args.get == 'day':
-    print(int(args.per_day + (args.per_week / 7) + (args.per_month / 30) + (args.per_year / 360)))
-elif args.get == 'month':
-    print(int(args.per_day * 30 + (args.per_week * 30 / 7) + args.per_month + args.per_year / 12))
-else:
-    print(int(args.per_day * 360 + (args.per_week * 360 / 7) + args.per_month * 12 + args.per_year))
+
+def format_text_block(frame_height, frame_width, file_name):
+    try:
+        with open(file_name) as in_file:
+            lines = in_file.readlines()
+        out_line = []
+        first_list = [line if (len(line) == 1 and line.find('\n') != -1) else line.replace('\n', '') for line in lines]
+        for line in ''.join(first_list).split('\n'):
+            for i in range(0, len(line), frame_width):
+                out_line.append(line[i:i + frame_width])
+            else:
+                out_line.append('')
+        return '\n'.join(out_line[:frame_height])
+    except Exception as text:
+        return text
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--frame-height', type=int)
+    parser.add_argument('--frame-width', type=int)
+    parser.add_argument('filename', type=str)
+    args = parser.parse_args()
+    print(format_text_block(args.frame_height, args.frame_width, args.filename))
