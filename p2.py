@@ -1,30 +1,26 @@
-# super cat
-import sys
-import os
+# veshlivi echo bot
+import logging
+from telegram.ext import Application, MessageHandler, filters
+from config import BOT_TOKEN
 
-test = sys.argv[1:]
-name = ''
-for el in test:
-    if '.txt' in el:
-        name = el
-if os.access(name, os.F_OK):
-    with open(name) as in_file:
-        lines = [line.rstrip('\n') for line in in_file.readlines()]
-    if '--sort' in test:
-        lines.sort()
-        test.pop(test.index('--sort'))
-    if len(test) > 1:
-        f = True
-        if '--num' in test:
-            for i in range(len(lines)):
-                print(i, lines[i])
-            f = False
-        if '--count' in test:
-            if f:
-                print(*lines, sep='\n')
-            print(f'rows count: {len(lines)}')
-    else:
-        print(*lines, sep='\n')
-else:
-    print('ERROR')
+logging.basicConfig(
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG
+)
 
+logger = logging.getLogger(__name__)
+
+
+async def echo(update, context):
+    await update.message.reply_text(f'Я получил сообщение {update.message.text}')
+
+
+def main():
+    application = Application.builder().token(BOT_TOKEN).build()
+    text_handler = MessageHandler(filters.TEXT, echo)
+    application.add_handler(text_handler)
+
+    application.run_polling()
+
+
+if __name__ == '__main__':
+    main()
