@@ -1,35 +1,16 @@
-import pytest
-from yandex_testing_lesson import Rectangle
+from yandex_testing_lesson import is_palindrome
 
 
-def test_one_step():
-    assert Rectangle(2, 3)
+def check():
+    if not is_palindrome(""):
+        return 'NO'
+    if not is_palindrome("a"):
+        return 'NO'
+    if not is_palindrome("aba"):
+        return 'NO'
+    if is_palindrome("abc"):
+        return 'NO'
+    return 'YES'
 
 
-def test_area():
-    assert Rectangle(2, 3).get_area() == 6
-
-
-def test_p():
-    assert Rectangle(2, 3).get_perimeter() == 10
-
-
-def test_wrong():
-    with pytest.raises(TypeError):
-        Rectangle('a', 1)
-
-
-def test_wrong_n():
-    with pytest.raises(ValueError):
-        Rectangle(-1, 2)
-
-
-def test_wrong_1():
-    with pytest.raises(TypeError):
-        Rectangle(1, 'a')
-
-
-def test_wrong_n1():
-    with pytest.raises(ValueError):
-        Rectangle(2, -1)
-
+print(check())
