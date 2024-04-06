@@ -1,15 +1,8 @@
-import requests
+# calculator 1.0
+import sys
 
-towns = ['Барнаул', 'Мелеуз', 'Йошкар-Ола']
-for city in towns:
-    geocoder_request = f"http://geocode-maps.yandex.ru/1.x/?apikey=40d1649f-0493-4b70-98ba-98533de7710b&geocode={city}&format=json"
-    response = requests.get(geocoder_request)
-    if response:
-        json_response = response.json()
-
-        toponym = json_response["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]
-        print(toponym["metaDataProperty"]["GeocoderMetaData"]["Address"]["Components"][2]["name"])
-    else:
-        print("Ошибка выполнения запроса:")
-        print(geocoder_request)
-        print("Http статус:", response.status_code, "(", response.reason, ")")
+test = sys.argv[1:]
+if len(test) != 2 or not (test[0].isdigit() and test[0].isdigit()):
+    print(0)
+else:
+    print(int(test[0]) + int(test[1]))
