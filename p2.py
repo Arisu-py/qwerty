@@ -1,20 +1,28 @@
-# kalculyator 30
+# mega cat
+import os
 import argparse
 
-parser = argparse.ArgumentParser(
-    description="test args")
-
-parser.add_argument('ar', nargs='*')
+parser = argparse.ArgumentParser()
+parser.add_argument("name")
+parser.add_argument('--sort', dest='sort', action='store_true')
+parser.add_argument('--num', dest='num', action='store_true')
+parser.add_argument('--count', dest='count', action='store_true')
 args = parser.parse_args()
-
-if not args.ar:
-    print("NO PARAMS")
-elif len(args.ar) == 1:
-    print("TOO FEW PARAMS")
-elif len(args.ar) > 2:
-    print("TOO MANY PARAMS")
+if os.access(args.name, os.F_OK):
+    with open(args.name) as in_file:
+        lines = [line.rstrip('\n') for line in in_file.readlines()]
+    if args.sort:
+        lines.sort()
+    f = True
+    if args.num:
+        for i in range(len(lines)):
+            print(i, lines[i])
+        f = False
+    if args.count:
+        if f:
+            print(*lines, sep='\n')
+        print(f'rows count: {len(lines)}')
+    if not (args.num or args.count):
+        print(*lines, sep='\n')
 else:
-    if args.ar[0].isdigit() and args.ar[1].isdigit():
-        print(int(args.ar[0]) + int(args.ar[1]))
-    else:
-        print('ValueError')
+    print('ERROR')
