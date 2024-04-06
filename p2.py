@@ -1,22 +1,15 @@
-import os
+import requests
 
-p = os.getcwd()
+towns = ['Барнаул', 'Мелеуз', 'Йошкар-Ола']
+for city in towns:
+    geocoder_request = f"http://geocode-maps.yandex.ru/1.x/?apikey=40d1649f-0493-4b70-98ba-98533de7710b&geocode={city}&format=json"
+    response = requests.get(geocoder_request)
+    if response:
+        json_response = response.json()
 
-
-def human_read_format(size):
-    n = ['Б', 'КБ', 'МБ', 'ГБ']
-    m = size
-    c = 0
-    while m / 1024 >= 1:
-        m = round(m / 1024)
-        c += 1
-    return f'{m}{n[c]}'
-
-
-def get_files_sizes():
-    sp = []
-    for a in os.listdir():
-        if os.path.isfile(a):
-            s = f'{p}/{a}'
-            sp.append(f'{a} {human_read_format(os.path.getsize(s))}')
-    return ('\n').join(sp)
+        toponym = json_response["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]
+        print(toponym["metaDataProperty"]["GeocoderMetaData"]["Address"]["Components"][2]["name"])
+    else:
+        print("Ошибка выполнения запроса:")
+        print(geocoder_request)
+        print("Http статус:", response.status_code, "(", response.reason, ")")
